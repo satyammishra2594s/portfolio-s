@@ -1,0 +1,1 @@
+import {create} from "zustand"; type State={progress:number;reduced:boolean;setProgress:(v:number)=>void;setReduced:(v:boolean)=>void}; export const useWorldStore=create<State>(set=>({progress:0,reduced:false,setProgress:v=>set({progress:v}),setReduced:v=>set({reduced:v})}));
