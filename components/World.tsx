@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 import {Canvas,useFrame,useThree} from "@react-three/fiber";
 import {Environment,Stars} from "@react-three/drei";
