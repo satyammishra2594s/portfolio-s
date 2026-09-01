@@ -14,63 +14,75 @@ gsap.registerPlugin(ScrollTrigger);
 
 function Terrain() {
   const geometry = useMemo(() => {
-    const g = new THREE.PlaneGeometry(70, 190, 60, 140);
+    const g = new THREE.PlaneGeometry(80, 210, 80, 180);
     const p = g.attributes.position;
     for (let i = 0; i < p.count; i++) {
-      const x = p.getX(i);
-      const y = p.getY(i);
-      p.setZ(i, Math.sin(x * 0.25) * 0.7 + Math.sin(y * 0.11) * 0.6 + Math.sin((x + y) * 0.05) * 0.7);
+      const x = p.getX(i), y = p.getY(i);
+      const road = Math.exp(-Math.pow(x / 5.8, 8));
+      const edge = (1 - road) * (Math.sin(x * .65 + y * .08) * .45 + Math.sin(y * .16) * .35);
+      p.setZ(i, edge + Math.sin(x * .17) * .25);
     }
     g.computeVertexNormals();
     return g;
   }, []);
-  return (
-    <mesh geometry={geometry} rotation-x={-Math.PI / 2} position={[0, -1, -55]} receiveShadow>
-      <meshStandardMaterial color="#160d0a" roughness={1} />
+  return <mesh geometry={geometry} rotation-x={-Math.PI/2} position={[0,-1,-55]} receiveShadow>
+    <meshStandardMaterial color="#24130d" roughness={1}/>
+  </mesh>;
+}
+
+function Road() {
+  return <group position={[0,-.82,-62]}>
+    <mesh rotation-x={-Math.PI/2} position={[0,0,0]}>
+      <planeGeometry args={[11,205,1,1]}/>
+      <meshStandardMaterial color="#0b0908" roughness={.98}/>
     </mesh>
-  );
+    <mesh rotation-x={-Math.PI/2} position={[-5.35,.03,0]}>
+      <planeGeometry args={[.16,205]}/>
+      <meshBasicMaterial color="#d96b22" emissive="#ff3b0a" emissiveIntensity={2}/>
+    </mesh>
+    <mesh rotation-x={-Math.PI/2} position={[5.35,.03,0]}>
+      <planeGeometry args={[.16,205]}/>
+      <meshBasicMaterial color="#d96b22" emissive="#ff3b0a" emissiveIntensity={2}/>
+    </mesh>
+    {Array.from({length:22},(_,i)=><mesh key={i} rotation-x={-Math.PI/2} position={[0,.04,5-i*9]}>
+      <planeGeometry args={[.45,3.8]}/>
+      <meshBasicMaterial color="#8d5a35"/>
+    </mesh>)}
+  </group>;
 }
 
 function Mountains() {
-  const mountains = Array.from({ length: 14 }, (_, i) => i);
-  return (
-    <group position={[0, 2, -85]}>
-      {mountains.map((i) => (
-        <mesh key={i} position={[(i - 7) * 9, 6 + (i % 4) * 2, -(i % 3) * 3]}>
-          <coneGeometry args={[8, 12 + (i % 4) * 3, 6]} />
-          <meshStandardMaterial color="#05070a" roughness={1} />
-        </mesh>
-      ))}
-    </group>
-  );
+  return <group position={[0,2,-92]}>
+    {Array.from({length:18},(_,i)=><mesh key={i} position={[(i-9)*8,6+(i%5)*2,-(i%4)*5]}>
+      <coneGeometry args={[9,14+(i%5)*3,6]}/>
+      <meshStandardMaterial color="#070709" roughness={1}/>
+    </mesh>)}
+  </group>;
 }
 
 function Fire() {
-  const light = useRef(null);
-  useFrame(({ clock }) => {
-    if (light.current) light.current.intensity = 7 + Math.sin(clock.elapsedTime * 9) * 1.5;
+  const group = useRef(null), light = useRef(null);
+  const flames = useMemo(() => Array.from({length:34},(_,i)=>({
+    x:(Math.random()-.5)*18, z:(Math.random()-.5)*10, s:.7+Math.random()*1.8, phase:Math.random()*6.28
+  })),[]);
+  useFrame(({clock}) => {
+    const t=clock.elapsedTime;
+    if(light.current) light.current.intensity=10+Math.sin(t*8)*2+Math.sin(t*19)*.7;
+    if(group.current) group.current.children.forEach((m,i)=>{
+      if(m.isMesh && i>0){ const d=flames[i-1]; m.scale.y=d.s*(1+.14*Math.sin(t*5+d.phase)); m.rotation.z=Math.sin(t*3+d.phase)*.08; }
+    });
   });
-  return (
-    <group position={[0, 0, -32]}>
-      <pointLight ref={light} color="#ff4b18" distance={45} intensity={8} />
-      <mesh position={[0, 3, 0]} scale={[6, 8, 2]}>
-        <coneGeometry args={[0.8, 2, 12]} />
-        <meshBasicMaterial color="#ff4b18" transparent opacity={0.9} />
-      </mesh>
-      <mesh position={[0, 1, 0]}>
-        <sphereGeometry args={[2.4, 20, 12]} />
-        <meshStandardMaterial color="#ff5b17" emissive="#ff2600" emissiveIntensity={5} />
-      </mesh>
-      <mesh position={[-1.5, 2, 0]} scale={[0.7, 1.8, 0.7]}>
-        <coneGeometry args={[0.8, 2, 10]} />
-        <meshBasicMaterial color="#ff9b32" />
-      </mesh>
-      <mesh position={[1.3, 2.2, 0]} scale={[0.6, 2.2, 0.6]}>
-        <coneGeometry args={[0.8, 2, 10]} />
-        <meshBasicMaterial color="#ffcc66" />
-      </mesh>
-    </group>
-  );
+  return <group ref={group} position={[0,-.3,-48]}>
+    <pointLight ref={light} color="#ff3b0a" distance={60} intensity={11}/>
+    {flames.map((f,i)=><mesh key={i} position={[f.x,.8+Math.random()*2,f.z]} scale={[f.s*.55,f.s*1.8,f.s*.55]}>
+      <sphereGeometry args={[1,10,8]}/>
+      <meshStandardMaterial color="#ff4b12" emissive="#ff2500" emissiveIntensity={4}/>
+    </mesh>)}
+    {Array.from({length:18},(_,i)=><mesh key={"smoke"+i} position={[(i-9)*1.3,5+(i%4)*1.7,-(i%5)]}>
+      <sphereGeometry args={[1.4+(i%3)*.5,8,6]}/>
+      <meshBasicMaterial color="#17100e" transparent opacity={.22}/>
+    </mesh>)}
+  </group>;
 }
 
 function Embers() {
@@ -205,7 +217,7 @@ function Scene() {
         <sphereGeometry args={[2.4, 24, 16]} />
         <meshBasicMaterial color="#dbe4ff" />
       </mesh>
-      <Terrain />
+      <Terrain />\n      <Road />
       <Mountains />
       <Fire />
       <Embers />
