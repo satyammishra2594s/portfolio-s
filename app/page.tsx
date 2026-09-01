@@ -5,5 +5,5 @@ const MediaWorld = dynamic(() => import("../components/MediaWorld"), { ssr: fals
 const Overlay = dynamic(() => import("../components/Overlay"), { ssr: false });
 
 export default function Page() {
-  return <><MediaWorld /><Overlay /></>;
+  return <div className="relative min-h-screen"><MediaWorld /><Overlay /></div>;
 }
