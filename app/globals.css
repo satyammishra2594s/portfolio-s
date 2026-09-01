@@ -1,2 +1,26 @@
 @import "tailwindcss";
-:root{color-scheme:dark}*{box-sizing:border-box}html,body{margin:0;background:#020204;color:#fff}body{overflow-x:hidden;font-family:Arial,Helvetica,sans-serif}.hud{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.18em;text-transform:uppercase}.fire-text{background:linear-gradient(#fff4d0,#ff9b32,#ff3b0a,#7d1007);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 28px #ff3b0a55)}.glass{background:#07080bb8;border:1px solid #ffffff18;box-shadow:0 20px 80px #0008,inset 0 1px #ffffff12;backdrop-filter:blur(18px)}.matrix span{position:absolute;top:-20%;color:#6fffb055;font:10px/1.4 monospace;writing-mode:vertical-rl;animation:fall linear infinite}@keyframes fall{to{transform:translateY(130vh);opacity:0}}.skill-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}@media(max-width:900px){.skill-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.skill-grid{grid-template-columns:1fr}}
+
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:#020204;color:#fff}
+body{overflow-x:hidden;font-family:Arial,Helvetica,sans-serif}
+button,a{font-family:inherit}
+
+.hud{font-family:"Courier New",monospace;letter-spacing:.16em;text-transform:uppercase;font-weight:700;text-shadow:2px 2px 0 #000}
+.fire-text{font-family:"Courier New",monospace;font-weight:900;letter-spacing:-.06em;text-transform:uppercase;background:linear-gradient(#fff8d6 0%,#ffd166 28%,#ff6a18 58%,#d51f08 82%,#5d0805 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(4px 4px 0 #240500) drop-shadow(0 0 24px #ff3b0a88)}
+main h2,main h3{font-family:"Courier New",monospace;font-weight:900;text-transform:uppercase;letter-spacing:-.035em;text-shadow:3px 3px 0 #000,0 0 18px #000}
+.glass{background:linear-gradient(180deg,#090b0dcc,#030405dd);border:3px solid #8d3b19;box-shadow:6px 6px 0 #170704,0 0 0 1px #ff9a3c33,inset 0 0 24px #ff4b120c;backdrop-filter:blur(8px);border-radius:2px}
+.glass:before{content:"";display:block;position:absolute;inset:4px;border:1px solid #ffb15a22;pointer-events:none}
+button,.glass.rounded-full{border-radius:2px!important}
+.bg-orange-500{border:3px solid #ffb15a!important;box-shadow:4px 4px 0 #3b0b03,0 0 18px #ff4b1266;font-family:"Courier New",monospace!important;letter-spacing:.08em;text-transform:uppercase}
+nav.glass{border-width:2px;padding:3px}
+nav.glass button{font-family:"Courier New",monospace;font-weight:900;text-shadow:2px 2px #000}
+nav.glass button:hover{background:#ff4b1222;box-shadow:inset 0 -2px #ff8a3d;color:#ffd29b}
+.skill-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;position:relative}
+.skill-grid:before{content:"";position:absolute;left:8%;right:8%;top:50%;height:2px;background:linear-gradient(90deg,transparent,#ff6a18,#6fdcff,#ff6a18,transparent);opacity:.45}
+.skill-grid>div{position:relative;z-index:1;min-height:145px}
+.skill-grid>div:after{content:"◆";position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:13px;color:#ff8a3d;text-shadow:0 0 12px #ff4b12}
+.matrix span{position:absolute;top:-20%;color:#6fffb055;font:10px/1.4 "Courier New",monospace;writing-mode:vertical-rl;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(130vh);opacity:0}}
+@media(max-width:900px){.skill-grid{grid-template-columns:repeat(2,1fr)}.skill-grid:before{display:none}}
+@media(max-width:560px){.skill-grid{grid-template-columns:1fr}.fire-text{letter-spacing:-.08em}}
